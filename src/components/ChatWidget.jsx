@@ -25,7 +25,7 @@ function ChatWidget() {
       });
 
       const data = await res.json();
-      const aiMessage = { role: 'assistant', content: data.response };
+      const aiMessage = { role: 'assistant', content: data.response || data.message };
       setMessages(prev => [...prev, aiMessage]);
     } catch (err) {
       console.error('❌ Error:', err);
