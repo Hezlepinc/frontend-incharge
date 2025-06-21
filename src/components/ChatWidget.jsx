@@ -24,11 +24,6 @@ function ChatWidget() {
         body: JSON.stringify({ message: input })
       });
 
-      if (!res.ok) {
-        throw new Error(`Response error: ${res.status}`);
-      }
-
-      // TEMP: parse raw text for debugging
       const text = await res.text();
       console.log('🪵 Raw response text:', text);
 
@@ -41,12 +36,9 @@ function ChatWidget() {
 
       console.log('🧠 Parsed response:', data);
 
-      const messageContent =
-        typeof data?.response === 'string' && data.response.trim()
-          ? data.response.trim()
-          : typeof data?.message === 'string' && data.message.trim()
-            ? data.message.trim()
-            : "🤖 Sorry, I didn’t catch that. Could you try again?";
+      const messageContent = (typeof data?.reply === 'string' && data.reply.trim())
+        ? data.reply.trim()
+        : "🤖 Sorry, I didn’t catch that. Could you try again?";
 
       const aiMessage = { role: 'assistant', content: messageContent };
       setMessages(prev => [...prev, aiMessage]);
