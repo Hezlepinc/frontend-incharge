@@ -24,22 +24,34 @@ function ChatWidget() {
         body: JSON.stringify({ message: input })
       });
 
-      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(`Response error: ${res.status}`);
+      }
 
-      const messageContent = (() => {
-        if (typeof data?.response === 'string' && data.response.trim()) {
-          return data.response.trim();
-        }
-        if (typeof data?.message === 'string' && data.message.trim()) {
-          return data.message.trim();
-        }
-        return "🤖 Sorry, I didn’t catch that. Could you try again?";
-      })();
+      // TEMP: parse raw text for debugging
+      const text = await res.text();
+      console.log('🪵 Raw response text:', text);
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (jsonErr) {
+        throw new Error(`JSON parse error: ${jsonErr.message}`);
+      }
+
+      console.log('🧠 Parsed response:', data);
+
+      const messageContent =
+        typeof data?.response === 'string' && data.response.trim()
+          ? data.response.trim()
+          : typeof data?.message === 'string' && data.message.trim()
+            ? data.message.trim()
+            : "🤖 Sorry, I didn’t catch that. Could you try again?";
 
       const aiMessage = { role: 'assistant', content: messageContent };
       setMessages(prev => [...prev, aiMessage]);
     } catch (err) {
-      console.error('❌ Error:', err);
+      console.error('❌ Fetch error:', err);
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: "Oops! I'm having trouble responding right now. Please try again later."
