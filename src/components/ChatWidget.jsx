@@ -25,12 +25,16 @@ function ChatWidget() {
       });
 
       const data = await res.json();
-      console.log('🧠 Claude API response:', data);
 
-      const messageContent =
-        (typeof data.response === 'string' && data.response) ||
-        (typeof data.message === 'string' && data.message) ||
-        '🤖 (No response received from assistant)';
+      const messageContent = (() => {
+        if (typeof data?.response === 'string' && data.response.trim()) {
+          return data.response.trim();
+        }
+        if (typeof data?.message === 'string' && data.message.trim()) {
+          return data.message.trim();
+        }
+        return "🤖 Sorry, I didn’t catch that. Could you try again?";
+      })();
 
       const aiMessage = { role: 'assistant', content: messageContent };
       setMessages(prev => [...prev, aiMessage]);
