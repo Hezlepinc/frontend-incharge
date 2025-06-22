@@ -6,6 +6,10 @@ export default defineConfig({
   preview: {
     port: 10000,
     host: true,
-    allowedHosts: ['frontend-incharge.onrender.com'], // ✅ Add this line
+    allowedHosts: [
+      'frontend-incharge.onrender.com',
+      'incharge-ai.com',
+      'www.incharge-ai.com', // ✅ Add both the root and www subdomain
+    ],
   },
 });
